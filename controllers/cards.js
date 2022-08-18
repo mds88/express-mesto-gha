@@ -2,7 +2,7 @@ const Card = require('../models/card');
 
 function ViewError(err, res) {
   if (err.name === 'ValidationError') {
-    return res.status(400).send({ message: 'Ошибка валидации данных!' });
+    return res.status(400).send({ message: `Ошибка валидации данных! ${err}` });
   }
   return res.status(500).send({ message: `Произошла ошибка: ${err}` });
 }
