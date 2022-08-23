@@ -21,7 +21,12 @@ const getUserById = (req, res) => {
       }
       return res.send({ user });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
+      }
+      return res.status(500).send({ message: `StatusCode: 500 - Произошла ошибка: ${err}` });
+    });
 };
 
 const createUser = (req, res) => {
