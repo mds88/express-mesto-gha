@@ -1,6 +1,6 @@
 const User = require('../models/user');
 
-function ViewError(err, res) {
+function handleError(err, res) {
   if (err.name === 'ValidationError') {
     return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
   }
@@ -13,7 +13,7 @@ function ViewError(err, res) {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const getUserById = (req, res) => {
@@ -24,7 +24,7 @@ const getUserById = (req, res) => {
       }
       return res.send({ user });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const createUser = (req, res) => {
@@ -32,7 +32,7 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send({ user }))
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const updateUser = (req, res) => {
@@ -46,7 +46,7 @@ const updateUser = (req, res) => {
       }
       return res.send({ user });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const updateUserAvatar = (req, res) => {
@@ -60,7 +60,7 @@ const updateUserAvatar = (req, res) => {
       }
       return res.send({ user });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 module.exports = {

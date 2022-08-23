@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 
-function ViewError(err, res) {
+function handleError(err, res) {
   if (err.name === 'ValidationError') {
     return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
   }
@@ -13,7 +13,7 @@ function ViewError(err, res) {
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ cards }))
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const postCard = (req, res) => {
@@ -22,7 +22,7 @@ const postCard = (req, res) => {
 
   Card.create({ name, link, owner })
     .then((card) => res.send({ card }))
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const deleteCard = (req, res) => {
@@ -33,7 +33,7 @@ const deleteCard = (req, res) => {
       }
       return res.send({ card });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const likeCard = (req, res) => {
@@ -50,7 +50,7 @@ const likeCard = (req, res) => {
       }
       return res.send({ card });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 const dislikeCard = (req, res) => {
@@ -67,7 +67,7 @@ const dislikeCard = (req, res) => {
       }
       return res.send({ card });
     })
-    .catch((err) => ViewError(err, res));
+    .catch((err) => handleError(err, res));
 };
 
 module.exports = {
