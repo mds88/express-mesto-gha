@@ -2,9 +2,9 @@ const User = require('../models/user');
 
 function ViewError(err, res) {
   if (err.name === 'ValidationError') {
-    return res.status(400).send({ message: `Ошибка валидации данных! ${err}` });
+    return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
   }
-  return res.status(500).send({ message: `Произошла ошибка: ${err}` });
+  return res.status(500).send({ message: `StatusCode: 500 - Произошла ошибка: ${err}` });
 }
 
 const getUsers = (req, res) => {
@@ -17,7 +17,7 @@ const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь не найден!' });
+        return res.status(404).send({ message: 'StatusCode: 404 - Пользователь не найден!' });
       }
       return res.send({ user });
     })
@@ -39,7 +39,7 @@ const updateUser = (req, res) => {
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь не найден!' });
+        return res.status(404).send({ message: 'StatusCode: 404 - Пользователь не найден!' });
       }
       return res.send({ user });
     })
@@ -53,7 +53,7 @@ const updateUserAvatar = (req, res) => {
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь не найден!' });
+        return res.status(404).send({ message: 'StatusCode: 404 - Пользователь не найден!' });
       }
       return res.send({ user });
     })

@@ -2,9 +2,9 @@ const Card = require('../models/card');
 
 function ViewError(err, res) {
   if (err.name === 'ValidationError') {
-    return res.status(400).send({ message: `Ошибка валидации данных! ${err}` });
+    return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
   }
-  return res.status(500).send({ message: `Произошла ошибка: ${err}` });
+  return res.status(500).send({ message: `StatusCode: 500 - Произошла ошибка: ${err}` });
 }
 
 const getCards = (req, res) => {
@@ -26,7 +26,7 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена!' });
+        return res.status(404).send({ message: 'StatusCode: 404 - Карточка не найдена!' });
       }
       return res.send({ card });
     })
@@ -43,7 +43,7 @@ const likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена!' });
+        return res.status(404).send({ message: 'StatusCode: 404 - Карточка не найдена!' });
       }
       return res.send({ card });
     })
@@ -60,7 +60,7 @@ const dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена!' });
+        return res.status(404).send({ message: 'StatusCode: 404 - Карточка не найдена!' });
       }
       return res.send({ card });
     })
