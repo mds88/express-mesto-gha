@@ -1,6 +1,6 @@
 const User = require('../models/user');
 
-function ViewError(err, res) { console.log(err);
+function ViewError(err, res) {
   if (err.name === 'ValidationError') {
     return res.status(400).send({ message: `Ошибка валидации данных! ${err}` });
   }
