@@ -4,6 +4,9 @@ function ViewError(err, res) {
   if (err.name === 'ValidationError') {
     return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
   }
+  if (err.name === 'CastError') {
+    return res.status(400).send({ message: `StatusCode: 400 - Некорректные данные в запросе! ${err}` });
+  }
   return res.status(500).send({ message: `StatusCode: 500 - Произошла ошибка: ${err}` });
 }
 
@@ -21,12 +24,7 @@ const getUserById = (req, res) => {
       }
       return res.send({ user });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
-      }
-      return res.status(500).send({ message: `StatusCode: 500 - Произошла ошибка: ${err}` });
-    });
+    .catch((err) => ViewError(err, res));
 };
 
 const createUser = (req, res) => {
