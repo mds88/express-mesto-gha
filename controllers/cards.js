@@ -1,73 +1,66 @@
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
-function handleError(err, res) {
-  if (err.name === 'ValidationError') {
-    return res.status(400).send({ message: `StatusCode: 400 - Ошибка валидации данных! ${err}` });
-  }
-  if (err.name === 'CastError') {
-    return res.status(400).send({ message: `StatusCode: 400 - Некорректные данные в запросе! ${err}` });
-  }
-  return res.status(500).send({ message: `StatusCode: 500 - Произошла ошибка: ${err}` });
-}
-
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
+    .orFail(new NotFoundError('Карточки не найдены!'))
     .then((cards) => res.send({ cards }))
     .catch((err) => handleError(err, res));
 };
 
-const postCard = (req, res) => {
+const postCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
     .then((card) => res.send({ card }))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'StatusCode: 404 - Карточка не найдена!' });
-      }
-      return res.send({ card });
-    })
-    .catch((err) => handleError(err, res));
-};
-
-const likeCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const userId = req.user._id;
+  const cardId = req.params.cardId;
+
+  Card.findOne({ cardId })
+    .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
+    .then((card) => {
+      if (card.owner.toString() === ownerId) {
+        card.delete()
+          .then(() => res.status(200).send('Карточка удалена!'))
+      } else {
+        throw new ForbiddenError('Нельзя удалить чужую карточку');
+      }
+    })
+    .catch(next);
+};
+
+const likeCard = (req, res, next) => {
+  const userId = req.user._id;
+  const cardId = req.params.cardId;
 
   Card.findByIdAndUpdate(
-    req.params.cardId,
+    cardId,
     { $addToSet: { likes: userId } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'StatusCode: 404 - Карточка не найдена!' });
-      }
-      return res.send({ card });
-    })
-    .catch((err) => handleError(err, res));
+    .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
+    .then((card) => res.send({ card }))
+    .catch(next);
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   const userId = req.user._id;
+  const cardId = req.params.cardId;
 
   Card.findByIdAndUpdate(
-    req.params.cardId,
+    cardId,
     { $pull: { likes: userId } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'StatusCode: 404 - Карточка не найдена!' });
-      }
-      return res.send({ card });
-    })
-    .catch((err) => handleError(err, res));
+  .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
+  .then((card) => res.send({ card }))
+  .catch(next);
 };
 
 module.exports = {
