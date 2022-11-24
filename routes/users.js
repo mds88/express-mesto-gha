@@ -12,10 +12,10 @@ const {
   getMySelf,
 } = require('../controllers/users');
 
-router.get('/', auth, getUsers);
-router.get('/me', auth, getMySelf);
+router.get('/users', auth, getUsers);
+router.get('/users/me', auth, getMySelf);
 
-router.get('/:userId', auth, celebrate({
+router.get('/users/:userId', auth, celebrate({
   params: Joi.object().keys({
     userId: Joi.string().alphanum().length(24)
   })
@@ -39,14 +39,14 @@ router.post('/signup', celebrate({
   })
 }), createUser);
 
-router.patch('/me', auth, celebrate({
+router.patch('/users/me', auth, celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30)
   })
 }), updateUser);
 
-router.patch('/me/avatar', auth, celebrate({
+router.patch('/users/me/avatar', auth, celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().uri()
   })

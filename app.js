@@ -20,7 +20,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true },
   console.log(message);
 });
 
-app.use('/users', routerUser);
+app.use(routerUser);
 app.use('/cards', routerCard);
 
 app.use('/', (req, res) => res.status(404).send({ message: 'Такой страницы не существует' }));
