@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const { celebrate, Joi } = require('celebrate');
+const { joiErrorHandler } = require('../middlewares/errorHandler');
+
+const urlRegexp = /https?:\/{2}\b[^\.][\w\-\.]{1,}\.[a-z]{2,6}([\w\S]{1,})?/;
 
 const {
   getUsers,
@@ -32,10 +35,11 @@ router.post('/signin', celebrate({
 router.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    // password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30)
-  }).unknown(true)
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(urlRegexp).error(errors => joiErrorHandler(errors[0]))
+  })//.unknown(true)
 }), createUser);
 
 router.patch('/users/me', auth, celebrate({
@@ -47,7 +51,7 @@ router.patch('/users/me', auth, celebrate({
 
 router.patch('/users/me/avatar', auth, celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().uri()
+    avatar: Joi.string().regex(urlRegexp).error(errors => joiErrorHandler(errors[0]))
   })
 }), updateUserAvatar);
 

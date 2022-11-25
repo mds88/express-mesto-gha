@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const { celebrate, Joi } = require('celebrate');
+const { joiErrorHandler } = require('../middlewares/errorHandler');
+
+const urlRegexp = /https?:\/{2}\b[^\.][\w\-\.]{1,}\.[a-z]{2,6}([\w\S]{1,})?/;
 
 const {
   getCards,
@@ -14,8 +17,8 @@ router.get('/', auth, getCards);
 
 router.post('/', auth, celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().uri()
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().regex(urlRegexp).error(errors => joiErrorHandler(errors[0]))
   })
 }), postCard);
 

@@ -1,4 +1,6 @@
-module.exports = (err, req, res, next) => {
+// module.exports =
+
+function errorHandler(err, req, res, next) {
   const { statusCode = 500, message } = err;
 
   if (err.name === 'ValidationError') {
@@ -19,4 +21,15 @@ module.exports = (err, req, res, next) => {
   }
 
   next();
+};
+
+function joiErrorHandler (error) {
+  const errorData = error.local;
+  error.message = `Key: '${errorData.key}' with value: '${errorData.value}' URL is not valid`;
+  return error;
+}
+
+module.exports = {
+  errorHandler,
+  joiErrorHandler
 };

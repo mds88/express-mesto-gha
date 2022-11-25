@@ -27,9 +27,9 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (card.owner.toString() === ownerId) {
         card.delete()
-          .then(() => res.status(200).send('Карточка удалена!'))
+          .then(() => res.status(200).send({ message: 'Карточка удалена!' }))
       } else {
-        throw new ForbiddenError('Нельзя удалить чужую карточку');
+        throw new ForbiddenError({ message: 'Нельзя удалить чужую карточку' });
       }
     })
     .catch(next);

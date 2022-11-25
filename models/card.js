@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const urlRegexp = /https?:\/{2}\b[^\.][\w\-\.]{1,}\.[a-z]{2,6}([\w\S]{1,})?/;
+// const urlRegexp = /https?:\/{2}\b[^\.][\w\-\.]{1,}\.[a-z]{2,6}([\w\S]{1,})?/;
 
 const cardSchema = new mongoose.Schema({
   name: {

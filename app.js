@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const routerUser = require('./routes/users');
 const routerCard = require('./routes/cards');
 const cookieParser = require('cookie-parser');
-const errorHandler = require('./middlewares/errorHandler');
+const { errorHandler }= require('./middlewares/errorHandler');
 const { errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
