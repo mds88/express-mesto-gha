@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
       validator: function(url) {
         return urlRegexp.test(url);
       },
-      message: props => `${props.value} is not a valid url!`
+      message: props => `${props.value} is not a valid url! (Check on schema level)`
     },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },

@@ -19,7 +19,7 @@ const postCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  const userId = req.user._id;
+  const ownerId = req.user._id;
   const cardId = req.params.cardId;
 
   Card.findOne({ cardId })

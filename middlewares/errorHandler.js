@@ -2,7 +2,7 @@ module.exports = (err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
   if (err.name === 'ValidationError') {
-    res.status(400).send({ message: `Ошибка валидации данных11! ${message}` });
+    res.status(400).send({ message: `Ошибка валидации данных! ${message}` });
   } else if (err.name === 'CastError') {
     res.status(400).send({ message: `Некорректные данные в запросе! ${message}` });
   } else if (err.code && err.code === 11000) {
