@@ -1,18 +1,19 @@
 const jwt = require('jsonwebtoken');
 const NotAuth = require('../errors/NotAuth');
 
-module.exports = (req, res, next) => {
-  const authorization = req.cookies.jwt;
+const { MYSECRETKEY } = process.env;
 
-  if (!authorization) {
-    throw new NotAuth('Необходима авторизация - Нет токена');
+module.exports = (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    next(new NotAuth('Необходима авторизация - Нет токена'));
   }
 
-  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
-    payload = jwt.verify(token, 'some-secret-key');
+    payload = jwt.verify(token, MYSECRETKEY);
   } catch (error) {
     next(new NotAuth('Необходима авторизация - Токен не верифицирован'));
   }

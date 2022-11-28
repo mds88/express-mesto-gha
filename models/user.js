@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const NotAuth = require('../errors/NotAuth');
+const { regexp } = require('../utils/constants');
 
-const urlRegexp = /https?:\/{2}\b[^\.][\w\-\.]{1,}\.[a-z]{2,6}([\w\S]{1,})?/;
+const urlRegexp = regexp.url;
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -21,27 +21,26 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator: function(url) {
+      validator(url) {
         return urlRegexp.test(url);
       },
-      message: props => `${props.value} is not a valid url! (Check on schema level)`
+      message: (props) => `${props.value} is not a valid url! (Check on schema level)`,
     },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    select: false
-  }
+    select: false,
+  },
 });
 
-userSchema.statics.findUserByCredentials = function(email, password) {
+userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
@@ -49,7 +48,7 @@ userSchema.statics.findUserByCredentials = function(email, password) {
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
-          if(!matched) {
+          if (!matched) {
             return Promise.reject(new NotAuth('Неправильные почта или пароль'));
           }
           return user;

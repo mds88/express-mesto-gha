@@ -1,11 +1,10 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .orFail(new NotFoundError('Пользователи не найдены!'))
     .then((users) => res.send({ users }))
     .catch(next);
 };
@@ -25,22 +24,28 @@ const getMySelf = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
 
   bcrypt.hash(password, 10)
-    .then(hash => User.create({
+    .then((hash) => User.create({
       name,
       about,
       avatar,
       email,
-      password: hash
+      password: hash,
     }), { new: true, runValidators: true })
     .then((user) => res.send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
       email: user.email,
-      _id: user._id
+      _id: user._id,
     }))
     .catch(next);
 };
@@ -78,7 +83,7 @@ const login = (req, res, next) => {
       }).send({ message: 'Аутентификация успешна' });
     })
     .catch(next);
-}
+};
 
 module.exports = {
   getUsers,

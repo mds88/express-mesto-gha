@@ -1,12 +1,12 @@
 const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
+const { messages } = require('../utils/constants');
 
 const getCards = (req, res, next) => {
   Card.find({})
-    .orFail(new NotFoundError('Карточки не найдены!'))
     .then((cards) => res.send({ cards }))
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
 const postCard = (req, res, next) => {
@@ -20,14 +20,14 @@ const postCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   const ownerId = req.user._id;
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
 
   Card.findOne({ cardId })
     .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
     .then((card) => {
       if (card.owner.toString() === ownerId) {
         card.delete()
-          .then(() => res.status(200).send({ message: 'Карточка удалена!' }))
+          .then(() => res.status(200).send({ message: messages.cardDeleted }));
       } else {
         throw new ForbiddenError({ message: 'Нельзя удалить чужую карточку' });
       }
@@ -37,7 +37,7 @@ const deleteCard = (req, res, next) => {
 
 const likeCard = (req, res, next) => {
   const userId = req.user._id;
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
     cardId,
@@ -51,16 +51,16 @@ const likeCard = (req, res, next) => {
 
 const dislikeCard = (req, res, next) => {
   const userId = req.user._id;
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: userId } },
     { new: true },
   )
-  .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
-  .then((card) => res.send({ card }))
-  .catch(next);
+    .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
+    .then((card) => res.send({ card }))
+    .catch(next);
 };
 
 module.exports = {

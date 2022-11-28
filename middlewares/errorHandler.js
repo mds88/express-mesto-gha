@@ -1,6 +1,4 @@
-// module.exports =
-
-function errorHandler(err, req, res, next) {
+module.exports = (err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
   if (err.name === 'ValidationError') {
@@ -11,25 +9,14 @@ function errorHandler(err, req, res, next) {
     res.status(409).send({ message: `Пользователь с Email: ${err.keyValue.email} уже существует!` });
   } else {
     res.status(statusCode)
-    .send(
-      {
-        message: statusCode === 500
-        ? `Ошибка сервера: ${message}`
-        : message
-      }
-    );
+      .send(
+        {
+          message: statusCode === 500
+            ? 'Ошибка сервера'
+            : message,
+        },
+      );
   }
 
   next();
-};
-
-function joiErrorHandler (error) {
-  const errorData = error.local;
-  error.message = `Key: '${errorData.key}' with value: '${errorData.value}' URL is not valid`;
-  return error;
-}
-
-module.exports = {
-  errorHandler,
-  joiErrorHandler
 };

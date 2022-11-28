@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-// const urlRegexp = /https?:\/{2}\b[^\.][\w\-\.]{1,}\.[a-z]{2,6}([\w\S]{1,})?/;
-
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,6 +18,7 @@ const cardSchema = new mongoose.Schema({
   },
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
     default: [],
   }],
   createdAt: {
