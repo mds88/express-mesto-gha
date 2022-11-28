@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const NotAuth = require('../errors/NotAuth');
 
-const { MYSECRETKEY } = process.env;
+const { MYSECRETKEY = 'asdasdasdfg212fdcd' } = process.env;
 
 module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
