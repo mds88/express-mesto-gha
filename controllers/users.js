@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 
+const { MYSECRETKEY } = process.env;
+
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ users }))
@@ -75,7 +77,7 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, MYSECRETKEY, { expiresIn: '7d' });
 
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
