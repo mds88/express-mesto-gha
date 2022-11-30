@@ -4,7 +4,7 @@ const Card = require('../models/card');
 const { messages } = require('../utils/constants');
 
 const getCards = (req, res, next) => {
-  Card.find({})
+  Card.find({}).populate(['owner', 'likes'])
     .then((cards) => res.send({ cards }))
     .catch(next);
 };
@@ -29,7 +29,7 @@ const deleteCard = (req, res, next) => {
         card.delete()
           .then(() => res.status(200).send({ message: messages.cardDeleted }));
       } else {
-        throw new ForbiddenError({ message: 'Нельзя удалить чужую карточку' });
+        next(new ForbiddenError('Нельзя удалить чужую карточку'));
       }
     })
     .catch(next);
@@ -43,7 +43,7 @@ const likeCard = (req, res, next) => {
     cardId,
     { $addToSet: { likes: userId } },
     { new: true },
-  )
+  ).populate(['owner', 'likes'])
     .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
     .then((card) => res.send({ card }))
     .catch(next);
@@ -57,7 +57,7 @@ const dislikeCard = (req, res, next) => {
     cardId,
     { $pull: { likes: userId } },
     { new: true },
-  )
+  ).populate(['owner', 'likes'])
     .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
     .then((card) => res.send({ card }))
     .catch(next);

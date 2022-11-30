@@ -5,25 +5,22 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const { MYSECRETKEY = 'asdasdasdfg212fdcd' } = process.env;
 
-const getUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.send({ users }))
-    .catch(next);
-};
+function findUsers(res, next, id = undefined) {
+  if (id === undefined) {
+    User.find({})
+      .then((users) => res.send({ users }))
+      .catch(next);
+  } else {
+    User.findById(id)
+      .orFail(new NotFoundError(`Пользователь с id: ${id} не найден!`))
+      .then((user) => res.send({ user }))
+      .catch(next);
+  }
+}
 
-const getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .orFail(new NotFoundError(`Пользователь с id: ${req.params.userId} не найден!`))
-    .then((user) => res.send({ user }))
-    .catch(next);
-};
-
-const getMySelf = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(new NotFoundError(`Пользователь с id: ${req.params.userId} не найден!`))
-    .then((user) => res.send({ user }))
-    .catch(next);
-};
+const getUsers = (req, res, next) => { findUsers(res, next); };
+const getUserById = (req, res, next) => { findUsers(res, next, req.params.userId); };
+const getMySelf = (req, res, next) => { findUsers(res, next, req.user._id); };
 
 const createUser = (req, res, next) => {
   const {
@@ -42,13 +39,11 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }), { new: true, runValidators: true })
-    .then((user) => res.send({
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-      email: user.email,
-      _id: user._id,
-    }))
+    .then((user) => {
+      const userObj = user.toObject();
+      delete userObj.password;
+      res.send(userObj);
+    })
     .catch(next);
 };
 

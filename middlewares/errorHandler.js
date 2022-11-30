@@ -12,7 +12,7 @@ module.exports = (err, req, res, next) => {
       .send(
         {
           message: statusCode === 500
-            ? 'Ошибка сервера'
+            ? `Ошибка сервера: ${message}`
             : message,
         },
       );

@@ -1,12 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const { errors } = require('celebrate');
-
-const routerUser = require('./routes/users');
-const routerCard = require('./routes/cards');
-const errorHandler = require('./middlewares/errorHandler');
-const { messages } = require('./utils/constants');
+const indexRouter = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
 
@@ -20,13 +15,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true },
   console.log(message);
 });
 
-app.use(routerUser);
-app.use('/cards', routerCard);
-
-app.use('/', (req, res) => res.status(404).send({ message: messages.pageNotFound }));
-
-app.use(errors());
-app.use(errorHandler);
+app.use(indexRouter);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
