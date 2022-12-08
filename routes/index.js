@@ -6,7 +6,7 @@ const { createUser, login } = require('../controllers/users');
 const routerUser = require('./users');
 const routerCard = require('./cards');
 
-const { messages, regexp } = require('../utils/constants');
+const { regexp } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 
 router.post('/signin', celebrate({
