@@ -8,6 +8,7 @@ module.exports = (req, res, next) => {
 
   if (!token) {
     next(new NotAuth('Необходима авторизация - Нет токена'));
+    return;
   }
 
   let payload;
@@ -16,6 +17,7 @@ module.exports = (req, res, next) => {
     payload = jwt.verify(token, MYSECRETKEY);
   } catch (error) {
     next(new NotAuth('Необходима авторизация - Токен не верифицирован'));
+    return;
   }
 
   req.user = payload;

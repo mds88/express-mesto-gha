@@ -7,49 +7,30 @@ const { regexp } = require('../utils/constants');
 const {
   getUsers,
   getUserById,
-  createUser,
   updateUser,
   updateUserAvatar,
-  login,
   getMySelf,
 } = require('../controllers/users');
 
-router.get('/users', auth, getUsers);
-router.get('/users/me', auth, getMySelf);
+router.get('/', auth, getUsers);
+router.get('/me', auth, getMySelf);
 
-router.get('/users/:userId', auth, celebrate({
+router.get('/:userId', auth, celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().hex().length(24),
+    userId: Joi.string().required().hex().length(24),
   }),
 }), getUserById);
 
-router.post('/signin', celebrate({
+router.patch('/me', auth, celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }),
-}), login);
-
-router.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(regexp.url),
-  }), // .unknown(true)
-}), createUser);
-
-router.patch('/users/me', auth, celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
   }),
 }), updateUser);
 
-router.patch('/users/me/avatar', auth, celebrate({
+router.patch('/me/avatar', auth, celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(regexp.url),
+    avatar: Joi.string().required().regex(regexp.urlReg),
   }),
 }), updateUserAvatar);
 

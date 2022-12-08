@@ -6,19 +6,18 @@ const NotFoundError = require('../errors/NotFoundError');
 const { MYSECRETKEY = 'asdasdasdfg212fdcd' } = process.env;
 
 function findUsers(res, next, id = undefined) {
-  if (id === undefined) {
-    User.find({})
-      .then((users) => res.send({ users }))
-      .catch(next);
-  } else {
-    User.findById(id)
-      .orFail(new NotFoundError(`Пользователь с id: ${id} не найден!`))
-      .then((user) => res.send({ user }))
-      .catch(next);
-  }
+  User.findById(id)
+    .orFail(new NotFoundError(`Пользователь с id: ${id} не найден!`))
+    .then((user) => res.send({ user }))
+    .catch(next);
 }
 
-const getUsers = (req, res, next) => { findUsers(res, next); };
+const getUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.send({ users }))
+    .catch(next);
+};
+
 const getUserById = (req, res, next) => { findUsers(res, next, req.params.userId); };
 const getMySelf = (req, res, next) => { findUsers(res, next, req.user._id); };
 

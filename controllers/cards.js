@@ -35,32 +35,26 @@ const deleteCard = (req, res, next) => {
     .catch(next);
 };
 
-const likeCard = (req, res, next) => {
+const chengeLikes = (req, res, next, action) => {
   const userId = req.user._id;
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
     cardId,
-    { $addToSet: { likes: userId } },
+    { [action]: { likes: userId } },
     { new: true },
   ).populate(['owner', 'likes'])
     .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
     .then((card) => res.send({ card }))
     .catch(next);
+}
+
+const likeCard = (req, res, next) => {
+  chengeLikes(req, res, next, '$addToSet');
 };
 
 const dislikeCard = (req, res, next) => {
-  const userId = req.user._id;
-  const { cardId } = req.params;
-
-  Card.findByIdAndUpdate(
-    cardId,
-    { $pull: { likes: userId } },
-    { new: true },
-  ).populate(['owner', 'likes'])
-    .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
-    .then((card) => res.send({ card }))
-    .catch(next);
+  chengeLikes(req, res, next, '$pull');
 };
 
 module.exports = {

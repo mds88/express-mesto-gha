@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const NotAuth = require('../errors/NotAuth');
 const { regexp } = require('../utils/constants');
 
-const urlRegexp = regexp.url;
+const { urlReg, emailReg } = regexp;
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(url) {
-        return urlRegexp.test(url);
+        return urlReg.test(url);
       },
       message: (props) => `${props.value} is not a valid url! (Check on schema level)`,
     },
@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    validate: {
+      validator(email) {
+        return emailReg.test(email);
+      },
+      message: (props) => `${props.value} is not a valid email! (Check on schema level)`,
+    },
     required: true,
     unique: true,
   },
