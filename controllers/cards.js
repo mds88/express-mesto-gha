@@ -47,7 +47,7 @@ const chengeLikes = (req, res, next, action) => {
     .orFail(new NotFoundError(`Карточка с id: ${cardId} не найдена!`))
     .then((card) => res.send({ card }))
     .catch(next);
-}
+};
 
 const likeCard = (req, res, next) => {
   chengeLikes(req, res, next, '$addToSet');
