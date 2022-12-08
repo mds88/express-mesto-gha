@@ -35,7 +35,7 @@ const deleteCard = (req, res, next) => {
     .catch(next);
 };
 
-const chengeLikes = (req, res, next, action) => {
+const commonActionDecorator = (action) => (req, res, next) => {
   const userId = req.user._id;
   const { cardId } = req.params;
 
@@ -49,13 +49,8 @@ const chengeLikes = (req, res, next, action) => {
     .catch(next);
 };
 
-const likeCard = (req, res, next) => {
-  chengeLikes(req, res, next, '$addToSet');
-};
-
-const dislikeCard = (req, res, next) => {
-  chengeLikes(req, res, next, '$pull');
-};
+const likeCard = commonActionDecorator('$addToSet');
+const dislikeCard = commonActionDecorator('$pull');
 
 module.exports = {
   getCards,
