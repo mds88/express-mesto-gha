@@ -11,14 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.20.0",
-    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-import-resolver-node": "^0.3.6",
-    "eslint-module-utils": "^2.7.4",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-scope": "^7.1.1",
-    "eslint-visitor-keys": "^3.3.0",
     "nodemon": "^2.0.19"
   },
   "dependencies": {

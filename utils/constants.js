@@ -1,6 +1,5 @@
 const messages = {
   cardDeleted: 'Карточка удалена!',
-  pageNotFound: 'Такой страницы не существует',
 };
 
 const regexp = {

@@ -7,6 +7,7 @@ const routerUser = require('./users');
 const routerCard = require('./cards');
 
 const { messages, regexp } = require('../utils/constants');
+const NotFoundError = require('../errors/NotFoundError');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -28,6 +29,6 @@ router.post('/signup', celebrate({
 router.use('/users', routerUser);
 router.use('/cards', routerCard);
 
-router.use('/', (req, res) => res.status(404).send({ message: messages.pageNotFound }));
+router.use('/', () => { throw new NotFoundError('Такой страницы не существует'); });
 
 module.exports = router;
