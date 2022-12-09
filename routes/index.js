@@ -29,6 +29,6 @@ router.post('/signup', celebrate({
 router.use('/users', routerUser);
 router.use('/cards', routerCard);
 
-router.use('/', () => { throw new NotFoundError('Такой страницы не существует'); });
+router.use('/', (req, res, next) => next(new NotFoundError('Такой страницы не существует')));
 
 module.exports = router;
